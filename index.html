@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Honesty – Werbung = Realität</title>
+<meta name="description" content="Honesty prüft, ob kleine Social-Media-Händler echt sind und wirklich verkaufen, was sie zeigen. Pilotphase: kostenlose Test-Prüfung.">
+<style>
+  :root{
+    --bg:#fbfaf7; --card:#ffffff; --ink:#1d2321; --muted:#5d6764;
+    --line:#e6e3dc; --accent:#1f7a5c; --accent-soft:#e6f3ee; --warn:#b4541a; --warn-soft:#fbeee4;
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.6;font-size:17px}
+  a{color:var(--accent)}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+
+  /* Language toggle: only the active language is shown */
+  body.lang-de .en{display:none!important}
+  body.lang-en .de{display:none!important}
+
+  header{position:sticky;top:0;z-index:10;background:rgba(251,250,247,.92);
+         backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-weight:800;font-size:22px;letter-spacing:-.5px;text-decoration:none;color:var(--ink)}
+  .logo span{color:var(--accent)}
+  .nav-links{display:flex;gap:22px;align-items:center}
+  .nav-links a{text-decoration:none;color:var(--muted);font-size:15px}
+  .nav-links a:hover{color:var(--ink)}
+  .lang-btn{border:1px solid var(--line);background:var(--card);border-radius:999px;
+            padding:6px 12px;font-size:14px;cursor:pointer;color:var(--ink)}
+  .lang-btn b{color:var(--accent)}
+
+  .pilot-bar{background:var(--warn-soft);color:var(--warn);text-align:center;
+             font-size:14px;padding:8px 16px;border-bottom:1px solid #f1d9c6}
+
+  .hero{padding:80px 0 60px;text-align:center}
+  .hero h1{font-size:clamp(34px,6vw,58px);line-height:1.08;margin:0 0 18px;letter-spacing:-1.5px}
+  .hero h1 em{font-style:normal;color:var(--accent)}
+  .hero p{font-size:20px;color:var(--muted);max-width:720px;margin:0 auto 32px}
+  .btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;
+       padding:14px 26px;border-radius:999px;font-weight:600}
+  .btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent);margin-left:10px}
+
+  section{padding:64px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  h2{font-size:clamp(26px,4vw,36px);margin:0 0 14px;letter-spacing:-.5px;line-height:1.2}
+  .lead{color:var(--muted);max-width:720px;margin:0 0 34px}
+
+  .grid{display:grid;gap:18px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .card h3{margin:0 0 8px;font-size:19px}
+  .card p{margin:0;color:var(--muted);font-size:16px}
+  .num{display:inline-flex;width:34px;height:34px;border-radius:50%;background:var(--accent-soft);
+       color:var(--accent);font-weight:700;align-items:center;justify-content:center;margin-bottom:12px}
+
+  .split{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+  ul.check,ul.cross,ul.dot{list-style:none;padding:0;margin:0}
+  ul.check li,ul.cross li,ul.dot li{padding:8px 0 8px 30px;position:relative;border-bottom:1px dashed var(--line);font-size:16px}
+  ul.check li:last-child,ul.cross li:last-child,ul.dot li:last-child{border-bottom:none}
+  ul.check li::before{content:"✓";position:absolute;left:4px;color:var(--accent);font-weight:700}
+  ul.cross li::before{content:"✕";position:absolute;left:4px;color:var(--warn);font-weight:700}
+  ul.dot li::before{content:"•";position:absolute;left:8px;color:var(--muted);font-weight:700}
+
+  .claims{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid var(--line)}
+  .claims th,.claims td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--line);font-size:16px;vertical-align:top}
+  .claims th{background:var(--accent-soft);font-size:14px;text-transform:uppercase;letter-spacing:.5px}
+  .claims tr:last-child td{border-bottom:none}
+
+  /* Sample verification page */
+  .sample{max-width:560px;margin:0 auto;background:var(--card);border:1px solid var(--line);
+          border-radius:22px;padding:28px;box-shadow:0 10px 30px rgba(0,0,0,.05)}
+  .sample .tag{display:inline-block;font-size:12px;font-weight:700;background:var(--warn-soft);color:var(--warn);
+               padding:4px 10px;border-radius:999px;margin-bottom:14px}
+  .sample h3{margin:0 0 4px;font-size:22px}
+  .sample .sub{color:var(--muted);font-size:15px;margin-bottom:18px}
+  .status{display:flex;align-items:center;gap:10px;background:var(--accent-soft);color:var(--accent);
+          border-radius:12px;padding:12px 14px;font-weight:700;margin-bottom:16px}
+  .seal{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:flex;
+        align-items:center;justify-content:center;font-weight:800}
+  .row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);font-size:15px}
+  .row:last-child{border-bottom:none}
+  .row span:last-child{color:var(--muted)}
+  .stars{color:#e0a100;letter-spacing:2px}
+
+  .pilot{background:var(--card);border:2px solid var(--accent);border-radius:24px;padding:34px}
+  .form-box{margin-top:24px;border:1px dashed var(--line);border-radius:16px;padding:20px;background:var(--bg)}
+  .placeholder{color:var(--warn);font-size:15px}
+
+  details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-bottom:12px}
+  summary{cursor:pointer;font-weight:600}
+  details p{color:var(--muted);margin:10px 0 0}
+
+  footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  footer a{color:var(--muted)}
+
+  @media (max-width:720px){
+    .nav-links a{display:none}
+    .btn.ghost{margin:12px 0 0}
+  }
+</style>
+</head>
+<body class="lang-de">
+
+<header>
+  <div class="wrap nav">
+    <a href="#" class="logo">Honesty<span>.</span></a>
+    <nav class="nav-links">
+      <a href="#problem"><span class="de">Problem</span><span class="en">Problem</span></a>
+      <a href="#pruefung"><span class="de">Prüfung</span><span class="en">Verification</span></a>
+      <a href="#kriterien"><span class="de">Kriterien</span><span class="en">Criteria</span></a>
+      <a href="#pilot"><span class="de">Pilotphase</span><span class="en">Pilot</span></a>
+      <a href="#faq">FAQ</a>
+      <button class="lang-btn" onclick="toggleLang()" aria-label="Sprache wechseln / switch language">
+        <span class="de"><b>DE</b> / EN</span><span class="en">DE / <b>EN</b></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<div class="pilot-bar">
+  <span class="de">Pilotphase: Es werden noch keine Siegel vergeben. Wir suchen die ersten Händler für eine kostenlose Test-Prüfung.</span>
+  <span class="en">Pilot phase: no seals are awarded yet. We're looking for the first sellers for a free trial verification.</span>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap">
+    <h1>
+      <span class="de">Echte Händler. Echte Produkte.<br><em>Werbung = Realität.</em></span>
+      <span class="en">Real sellers. Real products.<br><em>Ads = Reality.</em></span>
+    </h1>
+    <p>
+      <span class="de">Honesty unterscheidet seriöse Händler von Scammern: Wir prüfen, ob hinter einem Shop auf TikTok, Instagram &amp; Co. eine echte, ehrliche Person steht – und ob das Produkt wirklich so ankommt, wie es in der Werbung gezeigt wird.</span>
+      <span class="en">Honesty separates trustworthy sellers from scammers: we check whether a real, honest person stands behind a shop on TikTok, Instagram &amp; co. – and whether the product really arrives the way the ad shows it.</span>
+    </p>
+    <a class="btn" href="#pilot"><span class="de">Kostenlose Test-Prüfung anfragen</span><span class="en">Request a free trial check</span></a>
+    <a class="btn ghost" href="#pruefung"><span class="de">So funktioniert's</span><span class="en">How it works</span></a>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="wrap">
+    <div class="eyebrow"><span class="de">Das Problem</span><span class="en">The problem</span></div>
+    <h2>
+      <span class="de">Auf Social Media prüft kaum jemand, ob Händler halten, was sie versprechen.</span>
+      <span class="en">On social media, hardly anyone checks whether sellers deliver what they promise.</span>
+    </h2>
+    <p class="lead">
+      <span class="de">Jeder kann heute in wenigen Minuten einen Shop eröffnen und auf TikTok oder Instagram Werbung schalten. Selbst bezahlte Anzeigen werden kaum darauf geprüft, ob das Produkt der Werbung entspricht. Ob geschönte Fotos, geklaute Clips, erfundene Geschichten oder KI-Videos: Käufer merken oft erst nach dem Kauf, ob sie einem ehrlichen Händler vertraut haben oder einem Scammer. Das kostet Vertrauen – auch in die vielen ehrlichen Händler.</span>
+      <span class="en">Today, anyone can open a shop in minutes and run ads on TikTok or Instagram. Even paid ads are barely checked for whether the product matches the ad. Whether it's polished photos, stolen clips, made-up stories or AI videos: buyers often only find out after purchasing whether they trusted an honest seller or a scammer. That costs trust – including trust in the many honest sellers.</span>
+    </p>
+    <div class="grid g3">
+      <div class="card">
+        <h3><span class="de">Für Käufer</span><span class="en">For buyers</span></h3>
+        <p><span class="de">Ob ein Händler seriös ist und das Produkt so ankommt wie gezeigt, erfährt man meist erst, wenn es zu spät ist.</span><span class="en">Whether a seller is legit and the product arrives as shown, you usually only find out when it's too late.</span></p>
+      </div>
+      <div class="card">
+        <h3><span class="de">Für ehrliche Händler</span><span class="en">For honest sellers</span></h3>
+        <p><span class="de">Seriöse Händler werden mit Scammern in einen Topf geworfen und müssen um jedes bisschen Vertrauen kämpfen.</span><span class="en">Legit sellers get lumped in with scammers and have to fight for every bit of trust.</span></p>
+      </div>
+      <div class="card">
+        <h3><span class="de">Die Lücke</span><span class="en">The gap</span></h3>
+        <p><span class="de">Klassische Shop-Siegel prüfen vor allem Website und Bestellprozess, Plattformen vor allem ihre eigenen Marktplätze. Ob die Social-Media-Werbung zum echten Produkt passt, vergleicht kaum jemand.</span><span class="en">Classic shop seals mainly check the website and ordering process; platforms mainly check their own marketplaces. Hardly anyone compares the social media ad with the real product.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION / HOW -->
+<section id="pruefung">
+  <div class="wrap">
+    <div class="eyebrow"><span class="de">Die Lösung</span><span class="en">The solution</span></div>
+    <h2>
+      <span class="de">Wir prüfen Echtheit und Ehrlichkeit. Die Kunden bewerten die Qualität.</span>
+      <span class="en">We verify authenticity and honesty. Customers rate the quality.</span>
+    </h2>
+    <p class="lead">
+      <span class="de">Herzstück jeder Prüfung ist der Produkt-Check: Wir kaufen anonym und vergleichen, ob das, was ankommt, der Werbung entspricht. Wie die Werbung gemacht wurde – Handy, Profi-Kamera oder KI – ist egal. Unser Grundsatz: Business ist Business, es muss nur ehrlich sein.</span>
+      <span class="en">The heart of every check is the product check: we buy anonymously and compare whether what arrives matches the ad. How the ad was made – phone, pro camera or AI – doesn't matter. Our principle: business is business, it just has to be honest.</span>
+    </p>
+    <div class="grid g3">
+      <div class="card"><div class="num">1</div>
+        <h3><span class="de">Identität</span><span class="en">Identity</span></h3>
+        <p><span class="de">Ausweis + Selfie über einen spezialisierten Prüfdienst. Wir sehen nur das Ergebnis, nicht deinen Ausweis.</span><span class="en">ID + selfie via a specialised verification service. We only see the result, not your ID.</span></p></div>
+      <div class="card"><div class="num">2</div>
+        <h3><span class="de">Offizielle Anmeldung</span><span class="en">Official registration</span></h3>
+        <p><span class="de">Gewerbe oder Freiberufler-Nachweis, Firmensitz und Impressum passen zusammen.</span><span class="en">Business or freelancer registration; company seat and legal notice match up.</span></p></div>
+      <div class="card"><div class="num">3</div>
+        <h3><span class="de">Kurzer Videocall</span><span class="en">Short video call</span></h3>
+        <p><span class="de">5–10 Minuten: Ist die Person aus den Videos echt? Gehört ihr der Account? Hat sie das Produkt wirklich?</span><span class="en">5–10 minutes: is the person from the videos real? Do they own the account? Do they actually have the product?</span></p></div>
+      <div class="card"><div class="num">4</div>
+        <h3><span class="de">Belege für Aussagen</span><span class="en">Proof for claims</span></h3>
+        <p><span class="de">Wer „selbstgemacht“ oder „Made in Germany“ sagt, muss es belegen. Wer nichts Besonderes behauptet, muss weniger beweisen.</span><span class="en">Anyone claiming "handmade" or "made in Germany" has to prove it. Fewer claims, less to prove.</span></p></div>
+      <div class="card" style="border:2px solid var(--accent)"><div class="num">5</div>
+        <h3><span class="de">Produkt-Check per anonymem Testkauf</span><span class="en">Product check via anonymous test purchase</span></h3>
+        <p><span class="de">Das Herzstück: Wir bestellen verdeckt wie ein normaler Kunde und vergleichen Produkt, Material, Herkunft und Lieferzeit mit der Werbung.</span><span class="en">The core: we order undercover like a normal customer and compare product, material, origin and delivery time with the ad.</span></p></div>
+      <div class="card"><div class="num">6</div>
+        <h3><span class="de">Laufende Stichproben</span><span class="en">Ongoing spot checks</span></h3>
+        <p><span class="de">Zufällige Nachprüfungen, mindestens zweimal im Jahr – ohne festen Termin.</span><span class="en">Random re-checks, at least twice a year – with no fixed schedule.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CRITERIA -->
+<section id="kriterien">
+  <div class="wrap">
+    <div class="eyebrow"><span class="de">Öffentliche Kriterien</span><span class="en">Public criteria</span></div>
+    <h2><span class="de">Was wir prüfen – und was nicht.</span><span class="en">What we check – and what we don't.</span></h2>
+    <p class="lead"><span class="de">Transparenz ist der Kern unseres Siegels. Deshalb sind alle Kriterien öffentlich.</span><span class="en">Transparency is at the core of our seal. That's why all criteria are public.</span></p>
+
+    <table class="claims">
+      <tr>
+        <th><span class="de">Art der Aussage</span><span class="en">Type of claim</span></th>
+        <th><span class="de">Beispiel</span><span class="en">Example</span></th>
+        <th><span class="de">Wie wir prüfen</span><span class="en">How we check</span></th>
+      </tr>
+      <tr>
+        <td><b><span class="de">Sichtbare Fakten</span><span class="en">Visible facts</span></b></td>
+        <td><span class="de">Farbe, Größe, Material laut Etikett, Inhalt, Herkunftsetikett, Zubehör</span><span class="en">Colour, size, material per label, contents, origin label, accessories</span></td>
+        <td><span class="de">Selbst beim Testkauf</span><span class="en">Ourselves, during the test purchase</span></td>
+      </tr>
+      <tr>
+        <td><b><span class="de">Messbare Technik</span><span class="en">Measurable specs</span></b></td>
+        <td><span class="de">Akkulaufzeit, Wasserdichtigkeit, Leistung</span><span class="en">Battery life, water resistance, performance</span></td>
+        <td><span class="de">Händler legt Belege vor (Datenblatt, Prüfbericht); Stichproben</span><span class="en">Seller provides proof (data sheet, test report); spot checks</span></td>
+      </tr>
+      <tr>
+        <td><b><span class="de">Geschmack &amp; Meinung</span><span class="en">Taste &amp; opinion</span></b></td>
+        <td><span class="de">„Schmeckt kalt am besten“, „wunderschön“</span><span class="en">"Tastes best cold", "beautiful"</span></td>
+        <td><span class="de">Wird nicht geprüft – dafür gibt es die Kundenbewertungen</span><span class="en">Not checked – that's what customer reviews are for</span></td>
+      </tr>
+    </table>
+
+    <div class="split" style="margin-top:22px">
+      <div class="card">
+        <h3><span class="de">Kein Siegel bei …</span><span class="en">No seal if …</span></h3>
+        <ul class="cross">
+          <li><span class="de">KI- oder geklauten Videos, wenn das Produkt nicht der Werbung entspricht oder nicht ankommt</span><span class="en">AI or stolen videos where the product doesn't match the ad or never arrives</span></li>
+          <li><span class="de">falscher Herkunft (z. B. „Made in Germany“, obwohl woanders hergestellt)</span><span class="en">false origin (e.g. "made in Germany" when made elsewhere)</span></li>
+          <li><span class="de">„selbstgemacht“, obwohl zugekauft</span><span class="en">"handmade" when actually sourced</span></li>
+          <li><span class="de">verweigertem Videocall oder fehlenden Nachweisen</span><span class="en">refusing the video call or missing proof</span></li>
+          <li><span class="de">gefälschter Markenware oder verbotenen Produkten</span><span class="en">counterfeit or prohibited products</span></li>
+          <li><span class="de">vielen Beschwerden über Nicht-Lieferung oder ignorierte Rückgaben</span><span class="en">many complaints about non-delivery or ignored returns</span></li>
+          <li><span class="de">falschen Angaben oder gefälschten Dokumenten bei der Bewerbung</span><span class="en">false information or forged documents in the application</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="de">Fair für alle Seiten</span><span class="en">Fair to everyone</span></h3>
+        <ul class="check">
+          <li><span class="de">Wir reagieren erst bei mehreren Beschwerden – unzufriedene Einzelfälle gibt es immer.</span><span class="en">We only act on multiple complaints – there are always individual unhappy customers.</span></li>
+          <li><span class="de">Wer „entspricht nicht der Werbung“ meldet, lädt ein Foto hoch (Video erwünscht).</span><span class="en">Anyone reporting "doesn't match the ad" uploads a photo (video welcome).</span></li>
+          <li><span class="de">Händler bekommen immer die Chance zur Stellungnahme – mit Vorwarnung.</span><span class="en">Sellers always get the chance to respond – with a prior warning.</span></li>
+          <li><span class="de">Wird ein Siegel entzogen, steht das öffentlich auf der Prüfseite – mit sachlichen, belegbaren Gründen.</span><span class="en">If a seal is withdrawn, it's shown publicly on the verification page – with factual, provable reasons.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE PAGE -->
+<section id="beispiel">
+  <div class="wrap">
+    <div class="eyebrow"><span class="de">Für Käufer</span><span class="en">For buyers</span></div>
+    <h2><span class="de">So sieht eine Prüfseite aus.</span><span class="en">This is what a verification page looks like.</span></h2>
+    <p class="lead"><span class="de">Jeder geprüfte Händler bekommt eine öffentliche Seite. Ein Siegel-Bild allein kann jeder kopieren – der Link zur Prüfseite nicht.</span><span class="en">Every verified seller gets a public page. Anyone can copy a seal image – but not the link to the verification page.</span></p>
+
+    <div class="sample">
+      <div class="tag"><span class="de">Fiktives Beispiel – in der Pilotphase werden noch keine Siegel vergeben</span><span class="en">Fictional example – no seals are awarded during the pilot</span></div>
+      <h3>Lenas Häkelstudio</h3>
+      <div class="sub">@lenas.haekelstudio · <span class="de">Handmade · Taschen &amp; Accessoires</span><span class="en">Handmade · Bags &amp; accessories</span></div>
+      <div class="status"><div class="seal">✓</div><span class="de">Geprüft – Siegel gültig</span><span class="en">Verified – seal valid</span></div>
+      <div class="row"><span><span class="de">Identität bestätigt</span><span class="en">Identity confirmed</span></span><span>✓</span></div>
+      <div class="row"><span><span class="de">Offiziell angemeldet</span><span class="en">Officially registered</span></span><span>✓</span></div>
+      <div class="row"><span><span class="de">Account-Inhaberin bestätigt</span><span class="en">Account ownership confirmed</span></span><span>✓</span></div>
+      <div class="row"><span><span class="de">„Selbstgemacht“ – Herstellung gezeigt</span><span class="en">"Handmade" – production shown</span></span><span>✓</span></div>
+      <div class="row"><span><span class="de">Letzter Testkauf: Produkt = Werbung</span><span class="en">Last test purchase: product = ad</span></span><span>✓</span></div>
+      <div class="row"><span><span class="de">Kundenbewertungen (verifizierte Käufe)</span><span class="en">Customer reviews (verified purchases)</span></span><span><span class="stars">★★★★★</span> 4,7 · 38</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PILOT / SIGNUP -->
+<section id="pilot">
+  <div class="wrap">
+    <div class="pilot">
+      <div class="eyebrow"><span class="de">Pilotphase</span><span class="en">Pilot phase</span></div>
+      <h2><span class="de">Sei einer der ersten Händler.</span><span class="en">Be one of the first sellers.</span></h2>
+      <p class="lead" style="margin-bottom:20px">
+        <span class="de">Wir suchen 5–10 Händler, die eine kostenlose Test-Prüfung mitmachen und uns ehrliches Feedback geben. In der Pilotphase wird noch kein offizielles Siegel vergeben.</span>
+        <span class="en">We're looking for 5–10 sellers to take part in a free trial check and give us honest feedback. No official seal is awarded during the pilot.</span>
+      </p>
+      <div class="split">
+        <div>
+          <h3><span class="de">Für wen?</span><span class="en">Who is it for?</span></h3>
+          <ul class="dot">
+            <li><span class="de">Kleine Händler, die über Social Media verkaufen</span><span class="en">Small sellers who sell via social media</span></li>
+            <li><span class="de">Sitz in der EU, offiziell angemeldet (Gewerbe oder Freiberufler)</span><span class="en">Based in the EU, officially registered (business or freelancer)</span></li>
+            <li><span class="de">Mode, Schmuck, Taschen, Deko, Handmade</span><span class="en">Fashion, jewellery, bags, decor, handmade</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3><span class="de">Was du bekommst</span><span class="en">What you get</span></h3>
+          <ul class="check">
+            <li><span class="de">Kostenlose Test-Prüfung</span><span class="en">Free trial verification</span></li>
+            <li><span class="de">Persönliches Feedback, wie vertrauenswürdig dein Auftritt wirkt</span><span class="en">Personal feedback on how trustworthy your presence looks</span></li>
+            <li><span class="de">Dauerhaft vergünstigter Preis, falls das Siegel startet</span><span class="en">A permanently reduced price if the seal launches</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="form-box">
+        <p style="margin-top:0"><b><span class="de">In diesem Formular fragen wir nur:</span><span class="en">This form only asks for:</span></b>
+          <span class="de">Name, E-Mail, Shop-Link, Social-Media-Account und Produktart. Keine Zahlung, keine Passwörter, keine Ausweisdaten.</span>
+          <span class="en">name, email, shop link, social media account and product type. No payment, no passwords, no ID data.</span>
+        </p>
+        <!-- TALLY: replace TALLY_FORM_ID below with your form ID (e.g. "wAbCdE") -->
+        <iframe id="tally-form" data-tally-src="https://tally.so/embed/gDy5yl?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+                loading="lazy" width="100%" height="420" frameborder="0" marginheight="0" marginwidth="0"
+                title="Honesty Pilot Anmeldung" style="display:none"></iframe>
+        <p id="form-placeholder" class="placeholder">
+          <span class="de">[Hier erscheint das Anmeldeformular, sobald die Tally-Formular-ID eingetragen ist.]</span>
+          <span class="en">[The signup form will appear here once the Tally form ID is added.]</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="eyebrow">FAQ</div>
+    <h2><span class="de">Häufige Fragen</span><span class="en">Frequently asked questions</span></h2>
+
+    <details>
+      <summary><span class="de">Wer steckt hinter Honesty – und ist das seriös?</span><span class="en">Who is behind Honesty – and is this legit?</span></summary>
+      <p><span class="de">Ich bin Valentin, Schüler aus Rheinland-Pfalz. Ich bin selbst fast auf einen KI-Fake-Shop reingefallen und will ehrlichen Händlern helfen, sich davon abzuheben. Honesty ist ein Pilotprojekt: Es kostet nichts, ich frage weder nach Passwörtern noch nach Zahlungsdaten, und alle Kriterien stehen offen auf dieser Seite. Name und Kontakt findest du im Impressum.</span>
+         <span class="en">I'm Valentin, a student from Rhineland-Palatinate, Germany. I almost fell for an AI fake shop myself and want to help honest sellers stand out. Honesty is a pilot project: it's free, I never ask for passwords or payment details, and all criteria are public on this page. You'll find my name and contact details in the legal notice.</span></p>
+    </details>
+    <details>
+      <summary><span class="de">Kostet die Test-Prüfung etwas?</span><span class="en">Does the trial check cost anything?</span></summary>
+      <p><span class="de">Nein. In der Pilotphase ist alles kostenlos. Im Gegenzug wünsche ich mir ehrliches Feedback.</span><span class="en">No. Everything is free during the pilot. In return, I'd love your honest feedback.</span></p>
+    </details>
+    <details>
+      <summary><span class="de">Muss ich meinen Ausweis hochladen?</span><span class="en">Do I have to upload my ID?</span></summary>
+      <p><span class="de">Nicht über dieses Formular. Eine Identitätsprüfung würde später ausschließlich über einen spezialisierten, zertifizierten Prüfdienst laufen – ich selbst sehe oder speichere deinen Ausweis nie.</span><span class="en">Not through this form. Identity checks would later run exclusively through a specialised, certified verification service – I never see or store your ID myself.</span></p>
+    </details>
+    <details>
+      <summary><span class="de">Ist KI-Werbung ein Ausschlussgrund?</span><span class="en">Is AI advertising a reason for exclusion?</span></summary>
+      <p><span class="de">Nein. Entscheidend ist nur, dass das Produkt der Werbung entspricht. Honesty ist nicht gegen KI, sondern für Ehrlichkeit.</span><span class="en">No. All that matters is that the product matches the ad. Honesty isn't against AI – it's for honesty.</span></p>
+    </details>
+    <details>
+      <summary><span class="de">Ich bin Dropshipper – kann ich mitmachen?</span><span class="en">I'm a dropshipper – can I join?</span></summary>
+      <p><span class="de">Ja, solange du ehrlich bist: keine „selbstgemacht“-Behauptungen für zugekaufte Ware, realistische Lieferzeiten und Werbung, die dem echten Produkt entspricht.</span><span class="en">Yes, as long as you're honest: no "handmade" claims for sourced goods, realistic delivery times and ads that match the real product.</span></p>
+    </details>
+    <details>
+      <summary><span class="de">Was passiert mit meinen Daten?</span><span class="en">What happens to my data?</span></summary>
+      <p><span class="de">Deine Angaben nutze ich nur, um dich wegen der Pilotphase zu kontaktieren. Sie werden nicht weitergegeben und auf Wunsch jederzeit gelöscht. Details stehen in der Datenschutzerklärung.</span><span class="en">I only use your details to contact you about the pilot. They're never shared and will be deleted on request at any time. Details are in the privacy policy.</span></p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Honesty · <span class="de">Pilotprojekt</span><span class="en">Pilot project</span></div>
+    <div>
+      <a href="impressum.html"><span class="de">Impressum</span><span class="en">Legal notice</span></a> ·
+      <a href="datenschutz.html"><span class="de">Datenschutz</span><span class="en">Privacy</span></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Language: ?lang=en in the URL, otherwise browser language, default German
+  function setLang(l){
+    document.body.className = 'lang-' + l;
+    document.documentElement.lang = l;
+    document.title = l === 'en' ? 'Honesty – Ads = Reality' : 'Honesty – Werbung = Realität';
+  }
+  function toggleLang(){
+    setLang(document.body.classList.contains('lang-de') ? 'en' : 'de');
+  }
+  (function(){
+    var p = new URLSearchParams(location.search).get('lang');
+    if (p === 'en' || p === 'de') return setLang(p);
+    var nav = (navigator.language || 'de').toLowerCase();
+    setLang(nav.indexOf('de') === 0 ? 'de' : 'en');
+  })();
+
+  // Tally embed: only load once a real form ID is set
+  (function(){
+    var f = document.getElementById('tally-form');
+    var src = f.getAttribute('data-tally-src');
+    if (src.indexOf('TALLY_FORM_ID') === -1){
+      f.src = src; f.style.display = 'block';
+      document.getElementById('form-placeholder').style.display = 'none';
+      var s = document.createElement('script');
+      s.src = 'https://tally.so/widgets/embed.js'; s.async = true;
+      s.onload = function(){ if (window.Tally) Tally.loadEmbeds(); };
+      document.body.appendChild(s);
+    }
+  })();
+</script>
+</body>
+</html>
